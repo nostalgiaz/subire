@@ -47,14 +47,29 @@
 
         $('#magic-button').on('click', function() {
             var c = subireCoords
-              , $canvas = $('<canvas/>').attr('width', c.w).attr('height', c.h)[0]
+              , $canvas = $('<canvas/>')
               , image = new Image()
-              , context = $canvas.getContext("2d")
-              , ratio = c.w / c.h;
+              , context = $canvas[0].getContext("2d")
+              , ratio = 1
+              , maxWidth = 500
+              , maxHeight = 500
+              , finalWidth
+              , finalHeight;
+
+            if (c.w > maxWidth)
+                ratio = maxWidth / c.w;
+            else if (c.h > maxHeight)
+                ratio = maxHeight / c.h;
+
+            finalWidth = c.w * ratio;
+            finalHeight = c.h * ratio;
+
+            $canvas.attr("width", finalWidth).attr("height", finalHeight);
 
             image.src = $('#target>img').attr('src');
 
-            context.drawImage(image, c.x, c.y, c.w, c.h, 0, 0, c.w, c.h);
+            context.drawImage(image, c.x, c.y, c.w, c.h,
+                              0, 0, finalWidth, finalHeight);
 
             $('body').append($canvas);
         });
